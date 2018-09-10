@@ -1,0 +1,471 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.min.js"></script>
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.12.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.15/c3.min.js"></script>
+    <script type="text/javascript" src="https://pubnub.github.io/eon/v/eon/1.0.0/eon.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://pubnub.github.io/eon/v/eon/1.0.0/eon.css" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <title>Metrics</title>
+    <style>
+        #wrapper {
+            display: flex;
+        }
+        #chart2, #chart {
+            width: 50%;
+            overflow: visible;
+        }
+
+        #chart1, #chart4, #chart5, #chart3 {
+            width: 35%;
+            overflow: visible;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+            .sidenav a {
+                padding: 8px 8px 8px 32px;
+                text-decoration: none;
+                font-size: 25px;
+                color: #818181;
+                display: block;
+                transition: 0.3s;
+            }
+
+                .sidenav a:hover {
+                    color: #f1f1f1;
+                }
+
+            .sidenav .closebtn {
+                position: absolute;
+                top: 0;
+                right: 25px;
+                font-size: 36px;
+                margin-left: 50px;
+            }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+
+                .sidenav a {
+                    font-size: 18px;
+                }
+        }
+
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+            display: inline-block;
+        }
+
+        .w3-card {
+            padding: 15px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+            display: inline-block;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+        .container {
+            padding: 2px 16px;
+        }
+
+        body {
+            margin: 20px;
+            padding: 20px;
+        }
+
+        .column {
+            float: none;
+            width: 50%;
+            padding: 10px;
+            height: 300px;
+        }
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        input {
+            border: 5px solid grey;
+            -webkit-box-shadow: inset 0 0 8px rgba(0,0,0,0.1), 0 0 16px rgba(0,0,0,0.1);
+            -moz-box-shadow: inset 0 0 8px rgba(0,0,0,0.1), 0 0 16px rgba(0,0,0,0.1);
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.1), 0 0 16px rgba(0,0,0,0.1);
+            padding: 15px;
+            background: rgba(255,255,255,0.5);
+            margin: 0 0 10px 0;
+        }
+
+        form {
+            padding: 20px;
+            flex: auto;
+            float: none;
+            margin-top: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="http://localhost:8088/Dissertation/lib/Index.html">Map</a>
+    </div>
+
+    <h2 align="center">Suicide Statistics</h2>
+    <span style="font-size:20px;cursor:pointer" onclick="openNav()">&#9776; Navigate</span>
+
+    <div id="showNT"></div>
+    <div id="showNTpop"></div>
+
+    <div>
+
+        <div id="chart" class="card"></div>
+        <div id="chart1" class="card"></div>
+        <h2><div id="text2" align="right" style="padding:20px;"></div></h2>
+        <h2 style="float:left; padding:20px;">Region</h2>
+        <div id="chart2" class="card"></div>
+    </div>
+    <div id="chart4" class="card"></div>
+    <div id="chart5" class="card"></div>
+        <!--
+        <div class="card" style="float:right;">
+            <h2>Compare...</h2>
+            <button id="1981" value="1981" onclick="getData()"></button>
+            <script>
+                $('#showComparison').text()
+            </script>
+            <input type="submit" value="Submit"><br>
+            
+                <form method="GET" onsubmit="return getData()">
+                YEAR: <input type="text" name="year1"><br>
+                YEAR: <input type="text" name="year2"><br> 
+                <input type="reset" value="Clear">
+                <input type="submit" value="Submit"><br>
+            </form>
+            
+            <p id="showComparison"></p>
+        </div>      
+   
+    <div id="showComparison" class="card"></div>
+ -->
+  
+
+    <script type="text/javascript">
+        (function () {
+            var channel = 'Channel-ofc16pagy';
+            var subscribeKey = 'sub-c-68f5dfe0-630d-11e7-898a-02ee2ddab7fe';
+            var secretKey = 'sec-c-NTlhOGNjZWItZjMwYy00YmY0LWFiYzYtZmRlYTI3MDM1MzM5';
+
+            var pubnub = new PubNub({
+                subscribeKey: subscribeKey,
+                secretKey: secretKey,
+                ssl: true
+            })
+
+            pubnub.addListener({
+                status: function (statusEvent) {
+                    if (statusEvent.category === "PNConnectedCategory") {
+                        console.log(statusEvent.status);
+                    }
+                },
+                message: function (message) {
+                    var msg = JSON.parse(message.message[0]);
+                    $('#text2').text(msg.year);                    
+                },
+                presence: function (presenceEvent) {
+                    alert('present');
+                }
+            })
+
+            pubnub.subscribe({
+                channels: [channel],
+            });
+
+            var cols = ["deaths", "male", "female"];
+            var labels = {};
+            eon.chart({
+                pubnub: pubnub,
+                channels: ["Channel-ofc16pagy"],
+                history: false,
+                flow: true,
+                generate: {
+                    bindto: '#chart',
+                    data: {
+                        labels: true,
+                        type: "spline"
+                    },
+                    axis: {
+                        x: {
+                            type: 'spline',
+                            label: "Year",}
+                    }, y: {
+                        label: ""
+                    }
+                }, grid: {
+                    x: {
+                        show: false
+                    }, y: {
+                        show: false
+                    }
+                }, tooltip: {
+                    show: true
+                }, point: {
+                    show: true
+                },
+                xType: false,
+                transform: function (message) {
+                    var message = eon.c.flatten(JSON.parse(message));
+                    var o = {};
+                    for (index in message) {
+                        if (cols.indexOf(index) > -1) {
+                            o[index || message[0]] = message[index];
+                        }
+                    }
+                    return { eon: o };
+
+                }
+            });
+
+            var cols1 = ["10-14 P", "15-19 P", "20-24 P", "25-29 P", "30-34 P", "35-39 P", "40-44 P", "45-49 P", "50-54 P", "55-59 P", "60-64 P", "65-69 P", "70-74 P", "75-79 P", "80-84 P", "85-89 P", "90+ P"];
+            var labels1 = {};
+            eon.chart({
+                pubnub: pubnub,
+                channels: ["Channel-ofc16pagy"],
+                history: true,
+                flow: true,
+                generate: {
+                    bindto: '#chart1',
+                    data: {
+                        labels: true,
+                        type: "bar"
+                    },
+                    bar: {
+                        width: {
+                            ratio: 1.5
+                        }
+                    },
+                    axis: {
+                        rotated: false
+                    }
+                },
+                transform: function (message) {
+                    var message = eon.c.flatten(JSON.parse(message));
+                    var o = {};
+                    for (index in message) {
+                        if (cols1.indexOf(index) > -1) {
+                            o[index || message[0]] = message[index];
+                        }
+                    }
+                    return { eon: o };
+                }
+
+            });
+
+            var cols2 = ["North East", "North West", "Yorkshire", "East Midlands", "West Midlands", "East of England", "London", "South East", "South West"];
+            var labels2 = {};
+            eon.chart({
+                pubnub: pubnub,
+                channels: ["Channel-ofc16pagy"],
+                history: false,
+                flow: true,
+                generate: {
+                    bindto: '#chart2',
+                    data: {
+                        labels: true,
+                        type: "pie"
+                    },
+                    transition: { duration: 250 },
+                    axis: {
+                        x: {
+                            label: ""
+                        }, y: {
+                            label: ""
+                        }
+                    }, grid: {
+                        x: {
+                            show: false
+                        }, y: {
+                            show: false
+                        }
+                    }, tooltip: {
+                        show: true
+                    }, point: {
+                        show: true
+                    }
+                },
+                transform: function (message) {
+                    var message = eon.c.flatten(JSON.parse(message));
+                    var o = {};
+                    for (index in message) {
+                        if (cols2.indexOf(index) > -1) {
+                            o[index || message[0]] = message[index];
+                        }
+                    }
+                    return { eon: o };
+                }
+            });
+
+            var cols5 = ["North East F", "North West F", "Yorkshire F", "East Midlands F", "West Midlands F", "East of England F", "London F", "South East F", "South West F"];
+            var labels5 = {};
+            eon.chart({
+                pubnub: pubnub,
+                channels: ["Channel-ofc16pagy"],
+                history: false,
+                flow: true,
+                generate: {
+                    bindto: '#chart5',
+                    data: {
+                        labels: true,
+                        type: "pie"
+                    },
+                    transition: { duration: 250 },
+                    axis: {
+                        x: {
+                            label: ""
+                        }, y: {
+                            label: ""
+                        }
+                    }, grid: {
+                        x: {
+                            show: false
+                        }, y: {
+                            show: false
+                        }
+                    }, tooltip: {
+                        show: true
+                    }, point: {
+                        show: true
+                    }
+                },
+                transform: function (message) {
+                    var message = eon.c.flatten(JSON.parse(message));
+                    var o = {};
+                    for (index in message) {
+                        if (cols5.indexOf(index) > -1) {
+                            o[index || message[0]] = message[index];
+                        }
+                    }
+                    return { eon: o };
+                }
+            });
+            var cols4 = ["North East M", "North West M", "Yorkshire M", "East Midlands M", "West Midlands M", "East of England M", "London M", "South East M", "South West M"];
+            var labels4 = {};
+            eon.chart({
+                pubnub: pubnub,
+                channels: ["Channel-ofc16pagy"],
+                history: false,
+                flow: true,
+                generate: {
+                    bindto: '#chart4',
+                    data: {
+                        labels: true,
+                        type: "pie"
+                    },
+                    transition: { duration: 250 },
+                    axis: {
+                        x: {
+                            label: ""
+                        }, y: {
+                            label: ""
+                        }
+                    }, grid: {
+                        x: {
+                            show: false
+                        }, y: {
+                            show: false
+                        }
+                    }, tooltip: {
+                        show: true
+                    }, point: {
+                        show: true
+                    }
+                },
+                transform: function (message) {
+                    var message = eon.c.flatten(JSON.parse(message));
+                    var o = {};
+                    for (index in message) {
+                        if (cols4.indexOf(index) > -1) {
+                            o[index || message[0]] = message[index];
+                        }
+                    }
+                    return { eon: o };
+                }
+            });
+
+            var cols6 = ["North East M", "North West M", "Yorkshire M", "East Midlands M", "West Midlands M", "East of England M", "London M", "South East M", "South West M"];
+            var labels6 = {};
+            eon.chart({
+                pubnub: pubnub,
+                channels: ["Channel-ofc16pagy"],
+                history: false,
+                flow: true,
+                generate: {
+                    bindto: '#chart6',
+                    data: {
+                        labels: true,
+                        type: "pie"
+                    },
+                    transition: { duration: 250 },
+                    axis: {
+                        x: {
+                            label: ""
+                        }, y: {
+                            label: ""
+                        }
+                    }, grid: {
+                        x: {
+                            show: false
+                        }, y: {
+                            show: false
+                        }
+                    }, tooltip: {
+                        show: true
+                    }, point: {
+                        show: true
+                    }
+                },
+                transform: function (message) {
+                    var message = eon.c.flatten(JSON.parse(message));
+                    var o = {};
+                    for (index in message) {
+                        if (cols6.indexOf(index) > -1) {
+                            o[index || message[0]] = message[index];
+                        }
+                    }
+                    return { eon: o };
+                }
+            });
+          
+        })();
+
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }      
+
+    </script>
+</body>
+</html>

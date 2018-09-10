@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Suicide</title>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" /> 
+<script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"> </script>
+<script src='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
+
+<style>
+#map {
+	width: 100%;
+	height: 700px;
+}
+
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
+
+.legend {
+	text-align: left;
+	line-height: 50px;
+	color: #555;
+}
+
+.legend i {
+	width: 10px;
+	height: 50px;
+	float: left;
+	margin-right: 8px;
+	opacity: 0.7;
+}
+
+#map {
+	width: 100%;
+	height: 1000px;
+	z-index: 0;
+}
+
+.leaflet-container {
+	background: #000000;
+}
+
+.sidenav {
+	height: 100%;
+	width: 0;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	background-color: #111;
+	overflow-x: hidden;
+	transition: 0.5s;
+	padding-top: 60px;
+}
+
+.sidenav a {
+	padding: 8px 8px 8px 32px;
+	text-decoration: none;
+	font-size: 25px;
+	color: #818181;
+	display: block;
+	transition: 0.3s;
+}
+
+.sidenav a:hover {
+	color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+	position: absolute;
+	top: 0;
+	right: 25px;
+	font-size: 36px;
+	margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+	.sidenav {
+		padding-top: 15px;
+	}
+	.sidenav a {
+		font-size: 18px;
+	}
+}
+</style>
+</head>
+
+<!-- 
+mapbox access token
+pk.eyJ1IjoicHJleWUiLCJhIjoiY2ppa3Q3dTN5MDlqaDNxdW5lcDh5bWoyNCJ9.26kbDQrE8v-OC1VPt1Mkew
+ -->
+ <body>
+<div id="map"></div>
+<script type="text/javascript" src="./suicideqgis.geojson"></script>
+<script type="text/javascript">
+	var mapboxAccessToken = 'pk.eyJ1IjoicHJleWUiLCJhIjoiY2ppa3Q3dTN5MDlqaDNxdW5lcDh5bWoyNCJ9.26kbDQrE8v-OC1VPt1Mkew';
+	var map = L.map('map').setView([52.6, -1.5], 7); //lat, long of england
+	L.tileLayer('https://api.mapbox.com/styles/v1/preye/cjikvox2i0u502soz1hvmv6vu/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken, { //mapbox.mapbox-streets-v7
+	    id: 'mapbox.light',
+	    attribution: '...'
+	}).addTo(map);
+
+	//control for county information
+	var info = L.control();
+
+	info.onAdd = function (map) {
+	    this._div = L.DomUtil.create('div', 'info'); 
+	    this.update();
+	    return this._div;
+	};
+
+	info.update = function (props) {
+    this._div.innerHTML = '<h4>Average Suicide Population </h4>' +  '<b> Compare <a href="www.series9.io">Statistics</a> </b> <br />' + (props ?
+        '<b>' + props.NAME + '<br />'+ props.FinalQgisSuicide_Average +'</b><br />'+  '<br />'  
+      	: 'Hover over a County');
+	};
+	
+/* 	info.update = function (props) {
+	    this._div.innerHTML = '<span style="font-size:20px;cursor:pointer" onclick="openNav()"> Navigate </span>' +'<br />' +'<br />'+ '<h4>Healthcare Information by County: </h4>' +  (props ?
+	        '<b>' + props.osextract_name + '</b><br />' + props.osextract_address_1 + 
+	        '</b><br />' + props.osextract_postcode + '</b><br />' + props.osextract_open_date + 
+	        '</b><br />' + props.osextract_contact 
+	        : 'Hover over a county');
+	}; */
+	
+	info.addTo(map);
+	var geojson;
+	
+	function getColor(d) {
+		return d > 300 ? '#00441b' :
+	           d > 250  ? '#006d2c' :
+	     		d > 200 ? '#238b45' :
+	     		d > 150 ? '#41ab5d' :
+	     		d > 100 ? '#74c476' :
+	     		d > 50 ? '#a1d99b' :
+	     		d > 25 ? '#c7e9c0' :
+	     			'#e5f5e0';
+	}
+	
+	function style(feature) {
+	    return {
+	        weight: 2,
+	        opacity: 0.3,
+	        color: 'white',
+	        dashArray: '1',
+	        fillOpacity: 0.6,
+	        content :  feature.properties.NAME,
+	        fillColor: getColor(feature.properties.FinalQgisSuicide_Average )
+	    };
+	}
+
+	L.geoJson(counties, {style: style}).addTo(map);
+	
+	function highlightFeature(e) {
+	    var layer = e.target;
+	   
+
+	    layer.setStyle({
+	        weight: 5,
+	        color: '#666',
+	        dashArray: '',
+	        fillOpacity: 0.7
+	    });
+
+	    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+	        layer.bringToFront();
+	    }
+	    info.update(layer.feature.properties);
+	}
+	function resetHighlight(e) {
+	    geojson.resetStyle(e.target);
+	    info.update();
+	}
+	function zoomToFeature(e) {
+	    map.fitBounds(e.target.getBounds());
+	}
+	function onEachFeature(feature, layer) {
+	    layer.on({
+	        mouseover: highlightFeature,
+	        mouseout: resetHighlight,
+	        click: zoomToFeature
+	    });
+	}
+	
+	geojson = L.geoJson(counties, {
+	    style: style,
+	    onEachFeature: onEachFeature
+	}).addTo(map);
+	
+	var legend = L.control({position: 'bottomright'});
+
+	legend.onAdd = function (map) {
+	    var div = L.DomUtil.create('div', 'info legend'),
+	        grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+	        labels = [];
+
+	    // loop through our density intervals and generate a label with a colored square for each interval
+	    for (var i = 0; i < grades.length; i++) {
+	        div.innerHTML +=
+	            '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+	            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+	    }
+	    return div;
+	};
+
+	legend.addTo(map);
+	
+	 function openNav() {
+         document.getElementById("mySidenav").style.width = "250px";
+     }
+
+     function closeNav() {
+         document.getElementById("mySidenav").style.width = "0";
+     }
+</script>
+<div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <!-- <a href="index.html">Map</a> -->
+        <a href="file:///C:/Users/admin/source/repos/VisualizationApp/VisualizationApp/index2.html">Metrics</a>
+    </div>
+
+
+</body>
+</html>

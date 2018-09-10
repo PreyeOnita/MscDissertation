@@ -1,0 +1,11 @@
+C:\Users\admin\source\repos\RecDissertationApp\RecDissertationApp\bin\Debug\netcoreapp2.0\RecDissertationApp.deps.json
+C:\Users\admin\source\repos\RecDissertationApp\RecDissertationApp\bin\Debug\netcoreapp2.0\RecDissertationApp.runtimeconfig.json
+C:\Users\admin\source\repos\RecDissertationApp\RecDissertationApp\bin\Debug\netcoreapp2.0\RecDissertationApp.runtimeconfig.dev.json
+C:\Users\admin\source\repos\RecDissertationApp\RecDissertationApp\bin\Debug\netcoreapp2.0\RecDissertationApp.dll
+C:\Users\admin\source\repos\RecDissertationApp\RecDissertationApp\obj\Debug\netcoreapp2.0\RecDissertationApp.csprojAssemblyReference.cache
+C:\Users\admin\source\repos\RecDissertationApp\RecDissertationApp\obj\Debug\netcoreapp2.0\RecDissertationApp.csproj.CoreCompileInputs.cache
+C:\Users\admin\source\repos\RecDissertationApp\RecDissertationApp\obj\Debug\netcoreapp2.0\RecDissertationApp.AssemblyInfoInputs.cache
+C:\Users\admin\source\repos\RecDissertationApp\RecDissertationApp\obj\Debug\netcoreapp2.0\RecDissertationApp.AssemblyInfo.cs
+C:\Users\admin\source\repos\RecDissertationApp\RecDissertationApp\bin\Debug\netcoreapp2.0\RecDissertationApp.pdb
+C:\Users\admin\source\repos\RecDissertationApp\RecDissertationApp\obj\Debug\netcoreapp2.0\RecDissertationApp.dll
+C:\Users\admin\source\repos\RecDissertationApp\RecDissertationApp\obj\Debug\netcoreapp2.0\RecDissertationApp.pdb

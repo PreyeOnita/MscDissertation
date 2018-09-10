@@ -1,0 +1,14 @@
+C:\Users\admin\source\repos\DissertationApp\DissertationApp\bin\Debug\netcoreapp2.0\DissertationApp.deps.json
+C:\Users\admin\source\repos\DissertationApp\DissertationApp\bin\Debug\netcoreapp2.0\DissertationApp.runtimeconfig.json
+C:\Users\admin\source\repos\DissertationApp\DissertationApp\bin\Debug\netcoreapp2.0\DissertationApp.runtimeconfig.dev.json
+C:\Users\admin\source\repos\DissertationApp\DissertationApp\bin\Debug\netcoreapp2.0\DissertationApp.dll
+C:\Users\admin\source\repos\DissertationApp\DissertationApp\bin\Debug\netcoreapp2.0\DissertationApp.pdb
+C:\Users\admin\source\repos\DissertationApp\DissertationApp\obj\Debug\netcoreapp2.0\DissertationApp.csprojAssemblyReference.cache
+C:\Users\admin\source\repos\DissertationApp\DissertationApp\obj\Debug\netcoreapp2.0\DissertationApp.csproj.CoreCompileInputs.cache
+C:\Users\admin\source\repos\DissertationApp\DissertationApp\obj\Debug\netcoreapp2.0\DissertationApp.AssemblyInfoInputs.cache
+C:\Users\admin\source\repos\DissertationApp\DissertationApp\obj\Debug\netcoreapp2.0\DissertationApp.AssemblyInfo.cs
+C:\Users\admin\source\repos\DissertationApp\DissertationApp\obj\Debug\netcoreapp2.0\DissertationApp.dll
+C:\Users\admin\source\repos\DissertationApp\DissertationApp\obj\Debug\netcoreapp2.0\DissertationApp.pdb
+C:\Users\admin\source\repos\DissertationApp\DissertationApp\bin\Debug\netcoreapp2.0\DissertationApp.dll.config
+C:\Users\admin\source\repos\DissertationApp\DissertationApp\obj\Debug\netcoreapp2.0\DissertationApp.Properties.Resources.resources
+C:\Users\admin\source\repos\DissertationApp\DissertationApp\obj\Debug\netcoreapp2.0\DissertationApp.csproj.GenerateResource.cache
